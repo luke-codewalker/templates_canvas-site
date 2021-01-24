@@ -1,0 +1,42 @@
+$main-color: tomato;
+$text-color: #333;
+$text-color-light: #666;
+
+:root {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: $text-color;
+}
+
+body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: $main-color;
+}
+
+h2 {
+    color: $text-color-light;
+}
+
+ol {
+    text-align: left;
+    margin: 0;
+    li {
+        margin: 0.5rem 0;
+    }
+}
+
+a, a:visited {
+    color: $text-color-light;
+}
+
+code {
+    background-color: $text-color;
+    color: white;
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+}
