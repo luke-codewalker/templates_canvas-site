@@ -1,5 +1,6 @@
 import './index.scss';
 import { AnimationPlayState, CanvasAnimation } from "./canvas-animation";
+import { random } from './utils';
 
 const canvasAnimation = new CanvasAnimation(<HTMLCanvasElement>document.getElementById('canvas'));
 
@@ -15,17 +16,16 @@ canvasAnimation.animate(({ canvas, ctx }) => {
 }, { initialPlayState: AnimationPlayState.Paused, id: 'clearAnimation' });
 
 const circleAnimation = canvasAnimation.animate(({ canvas, ctx, frames }) => {
-    const x = Math.floor(Math.random() * canvas.width);
-    const y = Math.floor(Math.random() * canvas.height);
+    const x = random(0, canvas.width);
+    const y = random(0, canvas.height);
 
     if (frames % 12 === 0) {
         ctx.fillStyle = 'tomato';
     } else {
         ctx.fillStyle = 'teal';
     }
-    ctx.beginPath();
-    ctx.arc(x, y, 6, 0, Math.PI * 2);
-    ctx.fill();
+
+    canvasAnimation.fillCircle(x, y, 6);
 }, { frameRate: 20 })
 
 window.addEventListener('keypress', e => {

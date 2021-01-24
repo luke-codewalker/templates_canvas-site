@@ -15,6 +15,7 @@ export type AnimationOptions = {
     id?: string;
 }
 
+
 type AnimationControls = {
     pause: () => void;
     restart: () => void;
@@ -59,6 +60,12 @@ export class CanvasAnimation {
 
     get height(): number {
         return this.canvas.height;
+    }
+
+    fillCircle(x: number, y: number, r = 6) {
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, r, 0, Math.PI * 2);
+        this.ctx.fill();
     }
 
     animate(animationFunction: AnimationFunction, options?: AnimationOptions): AnimationControls {
