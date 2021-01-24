@@ -1,28 +1,47 @@
 import './index.scss';
-import { CanvasAnimation } from "./canvas";
+import { AnimationPlayState, CanvasAnimation } from "./canvas-animation";
 
-const canvas = new CanvasAnimation(<HTMLCanvasElement>document.getElementById('canvas'));
-canvas.frameRate = 24;
+const canvasAnimation = new CanvasAnimation(<HTMLCanvasElement>document.getElementById('canvas'));
 
-window.addEventListener('keypress', e => {
-    if (e.key === ' ') {
-        canvas.togglePlayState();
-    }
-})
+canvasAnimation.animate(({ canvas, ctx }) => {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}, { frameRate: 30 });
 
-canvas.aninimate((canvas) => {
+
+const { tick: clear } = canvasAnimation.animate(({ canvas, ctx }) => {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}, { initialPlayState: AnimationPlayState.Paused });
+
+const circleAnimation = canvasAnimation.animate(({ canvas, ctx, frames }) => {
     const x = Math.floor(Math.random() * canvas.width);
     const y = Math.floor(Math.random() * canvas.height);
 
-    canvas.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    canvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (canvas.frames % 24 === 0) {
-        canvas.ctx.fillStyle = 'tomato';
+    if (frames % 24 === 0) {
+        ctx.fillStyle = 'tomato';
     } else {
-        canvas.ctx.fillStyle = 'teal';
+        ctx.fillStyle = 'teal';
     }
-    canvas.ctx.beginPath();
-    canvas.ctx.arc(x, y, 8, 0, Math.PI * 2);
-    canvas.ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+}, { frameRate: 12 })
+
+window.addEventListener('keypress', e => {
+    if (e.key === ' ') {
+        circleAnimation.togglePlayState();
+    }
+
+    if (e.key === '+') {
+        circleAnimation.setFrameRate((circleAnimation.getFrameRate() ?? 24) * 2);
+    }
+
+    if (e.key === '-') {
+        circleAnimation.setFrameRate((circleAnimation.getFrameRate() ?? 24) / 2);
+    }
+
+    if (e.key === 'c') {
+        clear();
+    }
 })
