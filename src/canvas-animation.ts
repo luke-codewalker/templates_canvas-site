@@ -1,3 +1,5 @@
+import { uuid } from "./utils";
+
 export type AnimationFunctionArgs = {
     ctx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
@@ -10,11 +12,22 @@ export enum AnimationPlayState {
 export type AnimationOptions = {
     frameRate?: number;
     initialPlayState?: AnimationPlayState;
+    id?: string;
+}
+
+type AnimationControls = {
+    pause: () => void;
+    restart: () => void;
+    togglePlayState: () => void;
+    setFrameRate: (newFps: number | null) => void;
+    getFrameRate: () => number | null;
+    tick: (options?: { respectFrameRate: boolean }) => void;
 }
 
 export class CanvasAnimation {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    animations: { [key: string]: AnimationControls } = {};
 
     constructor(canvas?: HTMLCanvasElement) {
         if (canvas) {
@@ -48,7 +61,7 @@ export class CanvasAnimation {
         return this.canvas.height;
     }
 
-    animate(animationFunction: AnimationFunction, options?: AnimationOptions) {
+    animate(animationFunction: AnimationFunction, options?: AnimationOptions): AnimationControls {
         let frameRate: number | null = options?.frameRate ?? null;
         let frames = 0;
         let playState: AnimationPlayState = options?.initialPlayState ?? AnimationPlayState.Playing;
@@ -60,6 +73,10 @@ export class CanvasAnimation {
             if (nextFrameDue && playState === AnimationPlayState.Playing) {
                 lastAnimationTime = Date.now();
                 frames++;
+                if (!Number.isSafeInteger(frames)) {
+                    console.warn('Frames count is getting beyond Number.MAX_SAFE_INTEGER. Resetting frames to 0');
+                    frames = 0;
+                }
                 animationFunction({ canvas: this.canvas, ctx: this.ctx, frames });
             }
 
@@ -106,6 +123,8 @@ export class CanvasAnimation {
             animationLoop();
             playState = AnimationPlayState.Paused;
         }
+
+        this.animations[options?.id ?? uuid()] = { pause, restart, togglePlayState, setFrameRate, getFrameRate, tick };
 
         return { pause, restart, togglePlayState, setFrameRate, getFrameRate, tick };
     }

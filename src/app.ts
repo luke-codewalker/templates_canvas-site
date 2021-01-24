@@ -9,16 +9,16 @@ canvasAnimation.animate(({ canvas, ctx }) => {
 }, { frameRate: 30 });
 
 
-const { tick: clear } = canvasAnimation.animate(({ canvas, ctx }) => {
+canvasAnimation.animate(({ canvas, ctx }) => {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-}, { initialPlayState: AnimationPlayState.Paused });
+}, { initialPlayState: AnimationPlayState.Paused, id: 'clearAnimation' });
 
 const circleAnimation = canvasAnimation.animate(({ canvas, ctx, frames }) => {
     const x = Math.floor(Math.random() * canvas.width);
     const y = Math.floor(Math.random() * canvas.height);
 
-    if (frames % 24 === 0) {
+    if (frames % 12 === 0) {
         ctx.fillStyle = 'tomato';
     } else {
         ctx.fillStyle = 'teal';
@@ -26,7 +26,7 @@ const circleAnimation = canvasAnimation.animate(({ canvas, ctx, frames }) => {
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, Math.PI * 2);
     ctx.fill();
-}, { frameRate: 12 })
+}, { frameRate: 20 })
 
 window.addEventListener('keypress', e => {
     if (e.key === ' ') {
@@ -42,6 +42,6 @@ window.addEventListener('keypress', e => {
     }
 
     if (e.key === 'c') {
-        clear();
+        canvasAnimation.animations['clearAnimation'].tick();
     }
 })
