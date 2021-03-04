@@ -1,6 +1,6 @@
 import './index.scss';
-import { AnimationPlayState, CanvasAnimation } from "./canvas-animation";
-import { random } from './utils';
+import { AnimationPlayState, CanvasAnimation } from "./lib/canvas-animation";
+import { random } from './lib/utils';
 
 const canvasAnimation = new CanvasAnimation(<HTMLCanvasElement>document.getElementById('canvas'));
 
